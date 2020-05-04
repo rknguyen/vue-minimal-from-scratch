@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "browser-resolve": "^1.11.3",
+    "esmify": "^2.1.1",
+    "snabbdom": "^0.7.4",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "name": "vue-from-scratch",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build:test": "browserify test/index.js -p esmify > test/bundle.js",
+    "dev:test": "watchify -p esmify test/index.js -o test/bundle.js"
+  }
+}
