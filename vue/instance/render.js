@@ -24,27 +24,36 @@ export function initRender(vm) {
     vm.$components = vm.$options.components
   }
 
-  vm.$componentCount = {}
-  vm.$componentInstance = {}
-  vm.$onRenderComponentCount = {}
+  let $componentInstance = {}
+  let $onRenderComponentCount = {}
 
   const createElement = (sel, data, children) => {
     if (vm.$components && Object.keys(vm.$components).includes(sel)) {
       if (vm.$vnode) {
-        vm.$onRenderComponentCount[sel] = vm.$onRenderComponentCount[sel] + 1 || 0
-        vm.$onRenderComponentCount[sel] %= vm.$componentInstance[sel].length
-        return vm.$componentInstance[sel][vm.$onRenderComponentCount[sel]].$vnode
+        $onRenderComponentCount[sel] = $onRenderComponentCount[sel] + 1 || 0
+        $onRenderComponentCount[sel] %= $componentInstance[sel].length
+        return $componentInstance[sel][$onRenderComponentCount[sel]].$vnode
       } else {
-        if (!vm.$componentInstance[sel]) {
-          vm.$componentInstance[sel] = []
+        if (!$componentInstance[sel]) {
+          $componentInstance[sel] = []
         }
         const componentOptions = cloneDeep(vm.$components[sel])
         let instance = new Vue(componentOptions)
-        vm.$componentInstance[sel].push(instance)
-        return vm.$componentInstance[sel][vm.$componentInstance[sel].length - 1].$vnode
+        $componentInstance[sel].push(instance)
+        return $componentInstance[sel][$componentInstance[sel].length - 1].$vnode
       }
     } else {
-      return _createElement(sel, data, children)
+      if (Array.isArray(data)) {
+        return _createElement(sel, {}, data)
+      } else if (typeof data === 'object') {
+        if (Array.isArray(children)) {
+          return _createElement(sel, data, children)
+        } else {
+          return _createElement(sel, data)
+        }
+      } else {
+        return _createElement(sel)
+      }
     }
   }
 
@@ -68,6 +77,7 @@ export function initRender(vm) {
 
   vm._update = () => {
     const newVNode = vm._render.call(vm, createElement)
+    // console.log(vm._render, newVNode)
     if (vm.$vnode === null) {
       callHook(vm, 'beforeMount')
       if (vm.$el) {
