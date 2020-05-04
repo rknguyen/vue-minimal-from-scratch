@@ -1,5 +1,3 @@
-import { useEffect } from '../observer/dep'
-
 export function callHook(vm, hook) {
   if (
     Object.prototype.hasOwnProperty.call(vm.$options, hook) &&

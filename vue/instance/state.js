@@ -1,7 +1,10 @@
 import { defineReactiveData } from '../observer/index'
 
 export function initState(vm) {
-  initData(vm)
+  const opts = vm.$options
+  if (opts.data) {
+    initData(vm)
+  }
 }
 
 function initData(vm) {

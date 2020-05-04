@@ -1,27 +1,18 @@
 import Vue from '../vue/index'
 
-var vm = new Vue({
-  el: '#app',
+const buttonCounter = {
   data: {
     count: 0,
   },
-  beforeCreate: function () {
-    console.log('before create')
+  template: `<button @click="count += 1">You clicked me {{ count }} times.</button>`,
+}
+
+var vm = new Vue({
+  el: '#app',
+  components: {
+    'button-counter': buttonCounter,
   },
-  created: function () {
-    console.log(this.count)
-    console.log('created')
-  },
-  beforeMount: function () {
-    console.log('before mount')
-  },
-  mounted: function () {
-    console.log('mounted')
-  },
-  beforeUpdate: function () {
-    console.log('before update')
-  },
-  updated: function () {
-    console.log('updated')
+  data: {
+    count: 0,
   },
 })
