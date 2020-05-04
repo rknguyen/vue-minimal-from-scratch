@@ -40,9 +40,11 @@ export function initRender(vm) {
         let instance = vm.$componentInstance[sel][vm.$onRenderComponentCount[sel]]
 
         if (typeof data === 'object') {
-          const props = intersection(Object.keys(data.attrs), instance.$props)
-          for (let i = 0, l = props.length; i < l; ++i) {
-            instance[props[i]] = data.attrs[props[i]]
+          if (data.attrs) {
+            const props = intersection(Object.keys(data.attrs), instance.$props)
+            for (let i = 0, l = props.length; i < l; ++i) {
+              instance[props[i]] = data.attrs[props[i]]
+            }
           }
         }
 
@@ -55,12 +57,14 @@ export function initRender(vm) {
         let componentOptions = cloneDeep(vm.$components[sel])
 
         if (typeof data === 'object') {
-          const props = intersection(Object.keys(data.attrs), componentOptions.props)
-          const dataProps = {}
-          for (let i = 0, l = props.length; i < l; ++i) {
-            dataProps[props[i]] = data.attrs[props[i]]
+          if (data.attrs) {
+            const props = intersection(Object.keys(data.attrs), componentOptions.props)
+            const dataProps = {}
+            for (let i = 0, l = props.length; i < l; ++i) {
+              dataProps[props[i]] = data.attrs[props[i]]
+            }
+            componentOptions.data = merge(componentOptions.data, dataProps)
           }
-          componentOptions.data = merge(componentOptions.data, dataProps)
         }
 
         let instance = new Vue(componentOptions)
@@ -71,6 +75,7 @@ export function initRender(vm) {
       if (Array.isArray(data)) {
         return _createElement(sel, {}, data)
       } else if (typeof data === 'object') {
+        handleDomProps(data)
         if (Array.isArray(children)) {
           return _createElement(sel, data, children)
         } else {
@@ -107,16 +112,23 @@ export function initRender(vm) {
       if (vm.$el) {
         patch(vm.$container, newVNode)
       }
+      vm.$vnode = newVNode
       callHook(vm, 'mounted')
     } else {
       callHook(vm, 'beforeUpdate')
       patch(vm.$vnode, newVNode)
+      vm.$vnode = newVNode
       callHook(vm, 'updated')
     }
-    vm.$vnode = newVNode
   }
 }
 
 export function renderMixin(Vue) {
   installRenderHelpers(Vue.prototype)
+}
+
+function handleDomProps(data) {
+  if (data.domProps) {
+    data.props = data.domProps
+  }
 }
