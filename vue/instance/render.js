@@ -4,7 +4,6 @@ import { callHook } from './hook'
 
 import { Vue } from './index'
 import { cloneDeep, intersection, merge } from 'lodash'
-import { useEffect } from '../observer/dep'
 
 const snabbdom = require('snabbdom')
 
