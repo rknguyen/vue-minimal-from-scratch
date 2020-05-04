@@ -3,7 +3,8 @@ import { installRenderHelpers } from './render-helpers'
 import { callHook } from './hook'
 
 import { Vue } from './index'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, intersection, merge } from 'lodash'
+import { useEffect } from '../observer/dep'
 
 const snabbdom = require('snabbdom')
 
@@ -24,6 +25,10 @@ export function initRender(vm) {
     vm.$components = vm.$options.components
   }
 
+  if (vm.$options.props) {
+    vm.$props = vm.$options.props
+  }
+
   vm.$componentInstance = {}
   vm.$onRenderComponentCount = {}
 
@@ -32,12 +37,33 @@ export function initRender(vm) {
       if (vm.$vnode) {
         vm.$onRenderComponentCount[sel] = vm.$onRenderComponentCount[sel] + 1 || 0
         vm.$onRenderComponentCount[sel] %= vm.$componentInstance[sel].length
-        return vm.$componentInstance[sel][vm.$onRenderComponentCount[sel]].$vnode
+
+        let instance = vm.$componentInstance[sel][vm.$onRenderComponentCount[sel]]
+
+        if (typeof data === 'object') {
+          const props = intersection(Object.keys(data.attrs), instance.$props)
+          for (let i = 0, l = props.length; i < l; ++i) {
+            instance[props[i]] = data.attrs[props[i]]
+          }
+        }
+
+        return instance.$vnode
       } else {
         if (!vm.$componentInstance[sel]) {
           vm.$componentInstance[sel] = []
         }
-        const componentOptions = cloneDeep(vm.$components[sel])
+
+        let componentOptions = cloneDeep(vm.$components[sel])
+
+        if (typeof data === 'object') {
+          const props = intersection(Object.keys(data.attrs), componentOptions.props)
+          const dataProps = {}
+          for (let i = 0, l = props.length; i < l; ++i) {
+            dataProps[props[i]] = data.attrs[props[i]]
+          }
+          componentOptions.data = merge(componentOptions.data, dataProps)
+        }
+
         let instance = new Vue(componentOptions)
         vm.$componentInstance[sel].push(instance)
         return vm.$componentInstance[sel][vm.$componentInstance[sel].length - 1].$vnode
