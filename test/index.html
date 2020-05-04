@@ -1,7 +1,6 @@
-<ul id="v-for-object" class="demo">
-  <div v-for="(value, name, index) in object">
-    {{ index }}. {{ name }}: {{ value }}
-  </div>
-</ul>
+<div id="app">
+  You clicked {{ count }} times
+  <button @click="count += 1">+1</button>
+</div>
 
 <script src="./bundle.js"></script>

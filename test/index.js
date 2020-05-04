@@ -1,12 +1,27 @@
 import Vue from '../vue/index'
 
 var vm = new Vue({
-  el: '#v-for-object',
+  el: '#app',
   data: {
-    object: {
-      title: 'How to do lists in Vue',
-      author: 'Jane Doe',
-      publishedAt: '2016-04-10',
-    },
+    count: 0,
+  },
+  beforeCreate: function () {
+    console.log('before create')
+  },
+  created: function () {
+    console.log(this.count)
+    console.log('created')
+  },
+  beforeMount: function () {
+    console.log('before mount')
+  },
+  mounted: function () {
+    console.log('mounted')
+  },
+  beforeUpdate: function () {
+    console.log('before update')
+  },
+  updated: function () {
+    console.log('updated')
   },
 })
