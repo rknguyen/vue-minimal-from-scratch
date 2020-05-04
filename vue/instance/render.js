@@ -24,23 +24,23 @@ export function initRender(vm) {
     vm.$components = vm.$options.components
   }
 
-  let $componentInstance = {}
-  let $onRenderComponentCount = {}
+  vm.$componentInstance = {}
+  vm.$onRenderComponentCount = {}
 
   const createElement = (sel, data, children) => {
     if (vm.$components && Object.keys(vm.$components).includes(sel)) {
       if (vm.$vnode) {
-        $onRenderComponentCount[sel] = $onRenderComponentCount[sel] + 1 || 0
-        $onRenderComponentCount[sel] %= $componentInstance[sel].length
-        return $componentInstance[sel][$onRenderComponentCount[sel]].$vnode
+        vm.$onRenderComponentCount[sel] = vm.$onRenderComponentCount[sel] + 1 || 0
+        vm.$onRenderComponentCount[sel] %= vm.$componentInstance[sel].length
+        return vm.$componentInstance[sel][vm.$onRenderComponentCount[sel]].$vnode
       } else {
-        if (!$componentInstance[sel]) {
-          $componentInstance[sel] = []
+        if (!vm.$componentInstance[sel]) {
+          vm.$componentInstance[sel] = []
         }
         const componentOptions = cloneDeep(vm.$components[sel])
         let instance = new Vue(componentOptions)
-        $componentInstance[sel].push(instance)
-        return $componentInstance[sel][$componentInstance[sel].length - 1].$vnode
+        vm.$componentInstance[sel].push(instance)
+        return vm.$componentInstance[sel][vm.$componentInstance[sel].length - 1].$vnode
       }
     } else {
       if (Array.isArray(data)) {
@@ -77,7 +77,6 @@ export function initRender(vm) {
 
   vm._update = () => {
     const newVNode = vm._render.call(vm, createElement)
-    // console.log(vm._render, newVNode)
     if (vm.$vnode === null) {
       callHook(vm, 'beforeMount')
       if (vm.$el) {
