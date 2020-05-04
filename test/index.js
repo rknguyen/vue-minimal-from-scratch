@@ -1,11 +1,25 @@
 import Vue from '../vue/index'
 
-var vm = new Vue({
-  el: '#app',
+var todoApp = new Vue({
+  el: '#todo',
   data: {
-    title: 'ABC',
+    newTodoText: '',
+    todos: ['Eat', 'Sleep', 'Code'],
   },
-  mounted: function () {
-    // this.title = 'abc'
+  methods: {
+    keyup: function (event) {
+      if (event.code === 'Enter') {
+        this.addNewTodo()
+      }
+    },
+    addNewTodo: function () {
+      this.todos.push(this.newTodoText)
+      this.newTodoText = ''
+    },
+    remove: function (index) {
+      const todos = this.todos
+      todos.splice(index, 1)
+      this.todos = todos
+    },
   },
 })

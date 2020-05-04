@@ -28,6 +28,13 @@ export function initRender(vm) {
     vm.$props = vm.$options.props
   }
 
+  if (vm.$options.methods) {
+    vm.$methods = vm.$options.methods
+    Object.keys(vm.$methods).forEach((methodName) => {
+      vm[methodName] = (...args) => vm.$methods[methodName].call(vm, ...args)
+    })
+  }
+
   vm.$componentInstance = {}
   vm.$onRenderComponentCount = {}
 
@@ -128,7 +135,19 @@ export function renderMixin(Vue) {
 }
 
 function handleDomProps(data) {
+  data.props = {}
   if (data.domProps) {
-    data.props = data.domProps
+    data.props = merge(data.props, data.domProps)
+  }
+  if (data.staticClass) {
+    data.class = {}
+    data.staticClass.split(' ').forEach((className) => {
+      data.class[className] = true
+    })
+  }
+  if (data.attrs) {
+    if (data.attrs.id) {
+      data.props.id = data.attrs.id
+    }
   }
 }

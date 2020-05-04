@@ -1,6 +1,24 @@
-<div id="app">
-  {{ title }}
-  <input type="text" v-model="title" />
-</div>
-
-<script src="./bundle.js"></script>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Todo list</title>
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body>
+    <div id="todo">
+      <input
+        class="new-todo"
+        v-model="newTodoText"
+        placeholder="Add a todo"
+        @keyup="keyup"
+      />
+      <ul class="todo-list">
+        <li v-for="(todo, index) in todos">
+          {{ todo }}
+          <button @click="remove(index)">x</button>
+        </li>
+      </ul>
+    </div>
+  </body>
+  <script src="./bundle.js"></script>
+</html>

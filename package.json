@@ -11,7 +11,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build:test": "browserify test/index.js -p esmify > test/bundle.js",
+    "build:test": "browserify test/index.js -p esmify -p tinyify > test/bundle.js",
     "dev:test": "watchify -p esmify test/index.js -o test/bundle.js"
   }
 }
