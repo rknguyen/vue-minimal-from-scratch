@@ -3,7 +3,10 @@ import { installRenderHelpers } from './render-helpers'
 import { callHook } from './hook'
 
 import { Vue } from './index'
-import { cloneDeep, intersection, merge } from 'lodash'
+
+import merge from 'lodash/merge'
+import cloneDeep from 'lodash/cloneDeep'
+import intersection from 'lodash/intersection'
 
 const snabbdom = require('snabbdom')
 
@@ -148,6 +151,9 @@ function handleDomProps(data) {
   if (data.attrs) {
     if (data.attrs.id) {
       data.props.id = data.attrs.id
+    }
+    if (data.attrs.placeholder) {
+      data.props.placeholder = data.attrs.placeholder
     }
   }
 }
